@@ -1,0 +1,476 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>KSC AI Widget</title> <script
+			src="https://cdn.jsdelivr.net/gh/balacodeio/Vapi-Web-UMD@latest/dist/latest/vapi-web-bundle.min.js"
+			crossorigin
+		></script> <style>body{margin:0;font-family:"Segoe UI",sans-serif;background:transparent;min-height:100vh;display:flex;align-items:flex-end;justify-content:flex-end}#ksc-widget-root{position:fixed;bottom:28px;right:28px;z-index:99999;font-family:"Segoe UI",Arial,sans-serif}#ksc-launcher{display:flex;align-items:center;gap:10px;cursor:pointer}#ksc-launcher-label{background:#ffffff;color:#2c3e35;padding:11px 18px;border-radius:999px;font-size:14px;font-weight:600;line-height:1.2;box-shadow:0 4px 18px rgba(0,0,0,0.14);border:1px solid #dfe9e2;white-space:nowrap;transition:opacity 0.2s,transform 0.2s}#ksc-launcher-label small{display:block;margin-top:2px;font-size:11px;font-weight:500;color:#4a8c5c;letter-spacing:0.02em}#ksc-widget-root.panel-open #ksc-launcher-label{opacity:0;pointer-events:none;transform:translateX(8px)}#ksc-trigger{width:62px;height:62px;border-radius:50%;background:#4a8c5c;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.25);transition:transform 0.2s,background 0.2s;position:relative;flex-shrink:0}#ksc-launcher:hover #ksc-trigger{background:#3a7049;transform:scale(1.06)}#ksc-launcher:hover #ksc-launcher-label{border-color:#4a8c5c}#ksc-trigger svg{width:28px;height:28px;pointer-events:none}#ksc-trigger .pulse{position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#4caf50;border-radius:50%;border:2px solid #ffffff}#ksc-panel{position:absolute;bottom:76px;right:0;width:calc(100vw - 56px);max-width:320px;background:#ffffff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.18);overflow:hidden;display:none;flex-direction:column;animation:panelIn 0.22s ease}#ksc-panel.open{display:flex}@keyframes panelIn{from{opacity:0;transform:scale(0.92) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}.ksc-header{background:#2c3e35;padding:16px 18px 14px;display:flex;align-items:center;gap:12px}.ksc-avatar{width:46px;height:46px;border-radius:50%;border:2px solid #4a8c5c;overflow:hidden;flex-shrink:0}.ksc-avatar img{width:100%;height:100%;object-fit:cover}.ksc-header-text h3{margin:0 0 2px;color:#ffffff;font-size:15px;font-weight:600}.ksc-header-text p{margin:0;color:#7ec89a;font-size:11px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase}.ksc-close{background:none;border:none;cursor:pointer;color:#888;font-size:20px;margin-left:auto;padding:4px;border-radius:50%;transition:color 0.15s}.ksc-close:hover{color:#fff}.ksc-body{padding:20px 18px 12px;background:#ffffff}.ksc-body>p{margin:0 0 16px;color:#444;font-size:13.5px;line-height:1.55}.ksc-option{display:flex;align-items:center;gap:13px;width:100%;background:#f0f5f1;border:1.5px solid #dfe9e2;border-radius:12px;padding:13px 15px;margin-bottom:10px;cursor:pointer;transition:background 0.18s,border-color 0.18s,transform 0.1s;text-align:left}.ksc-option:hover{background:#e2efe6;border-color:#4a8c5c;transform:translateX(2px)}.ksc-option:last-child{margin-bottom:0}.ksc-option-icon{width:40px;height:40px;border-radius:10px;background:#2c3e35;display:flex;align-items:center;justify-content:center;flex-shrink:0}.ksc-option-icon svg{width:20px;height:20px}.ksc-option-text h4{margin:0 0 2px;color:#2c3e35;font-size:14px;font-weight:600}.ksc-option-text p{margin:0;color:#888;font-size:12px}.ksc-option-arrow{margin-left:auto;color:#4a8c5c;font-size:18px}.ksc-footer{padding:10px 18px 14px;text-align:center;border-top:1px solid #dfe9e2;background:#f8fbf9}.ksc-footer a{font-size:10.5px;color:#bbb;text-decoration:none}#ksc-chat-screen{display:none;flex-direction:column;max-height:480px;min-height:380px}#ksc-chat-screen.active{display:flex}.ksc-chat-messages{flex:1;overflow-y:auto;padding:16px;background:#fafaf8;display:flex;flex-direction:column;gap:10px}.ksc-msg{max-width:82%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.5}.ksc-msg.bot{background:#2c3e35;color:#fff;border-bottom-left-radius:3px;align-self:flex-start}.ksc-msg.user{background:#4a8c5c;color:#fff;border-bottom-right-radius:3px;align-self:flex-end}.ksc-typing{display:flex;gap:4px;align-items:center;padding:10px 13px;background:#2c3e35;border-radius:12px;border-bottom-left-radius:3px;width:fit-content}.ksc-typing span{width:6px;height:6px;background:#7ec89a;border-radius:50%;animation:bounce 1.2s infinite}.ksc-typing span:nth-child(2){animation-delay:0.2s}.ksc-typing span:nth-child(3){animation-delay:0.4s}@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}.ksc-chat-input-row{display:flex;gap:8px;padding:12px 14px;border-top:1px solid #dfe9e2;background:#fff}.ksc-chat-input-row input{flex:1;border:1.5px solid #dfe9e2;border-radius:8px;padding:9px 12px;font-size:13px;outline:none;color:#222;background:#f8fbf9}.ksc-chat-input-row input:focus{border-color:#4a8c5c}.ksc-send-btn{background:#4a8c5c;border:none;border-radius:8px;width:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.15s}.ksc-send-btn:hover{background:#3a7049}.ksc-send-btn svg{width:16px;height:16px}#ksc-voice-screen{display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px 24px;gap:16px;background:#fff;min-height:280px}#ksc-voice-screen.active{display:flex}.ksc-voice-status{font-size:13px;color:#888;text-align:center}.ksc-mic-btn{width:72px;height:72px;border-radius:50%;background:#2c3e35;border:3px solid #4a8c5c;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}.ksc-mic-btn:hover{transform:scale(1.08);box-shadow:0 0 0 8px rgba(74,140,92,0.15)}.ksc-mic-btn.active{animation:pulse-ring 1.5s ease infinite;background:#4a8c5c}@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(74,140,92,0.5)}70%{box-shadow:0 0 0 16px rgba(74,140,92,0)}100%{box-shadow:0 0 0 0 rgba(74,140,92,0)}}.ksc-mic-btn svg{width:30px;height:30px}.ksc-voice-note{font-size:11.5px;color:#aaa;text-align:center;max-width:220px;line-height:1.5}.ksc-back-btn{background:none;border:1px solid #dfe9e2;border-radius:8px;padding:7px 16px;font-size:12px;color:#888;cursor:pointer;transition:border-color 0.15s,color 0.15s}.ksc-back-btn:hover{border-color:#4a8c5c;color:#4a8c5c}[id^="vapi-"],.vapi-btn,#vapi-support-btn{display:none !important}.ksc-end-chat-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-top:1px solid #dfe9e2;background:#f8fbf9;flex-shrink:0}.ksc-end-chat-btn{background:none;border:1px solid #dfe9e2;border-radius:8px;padding:6px 14px;font-size:11px;color:#888;cursor:pointer;transition:all 0.15s}.ksc-end-chat-btn:hover{border-color:#2c3e35;color:#2c3e35}.ksc-end-chat-status{font-size:11px;color:#4a8c5c}#ksc-lang-wrap{position:relative;margin-left:auto;display:flex;align-items:center;gap:6px}#ksc-lang-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:999px;color:#fff;font-size:12px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background 0.15s}#ksc-lang-btn:hover{background:rgba(255,255,255,0.2)}#ksc-lang-btn .chev{font-size:9px;opacity:0.8}#ksc-lang-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.22);overflow:hidden;display:none;flex-direction:column;min-width:150px;z-index:50}#ksc-lang-menu.open{display:flex}.ksc-lang-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:none;border:none;cursor:pointer;font-size:14px;color:#2c3e35;text-align:left;transition:background 0.12s}.ksc-lang-item:hover{background:#f0f5f1}.ksc-lang-item.active{background:#e2efe6;font-weight:600}</style> </head><body><div id="ksc-widget-root"><div id="ksc-launcher" onclick="kscToggle()" role="button" tabindex="0" aria-label="Ask Jake — open chat" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); kscToggle(); }" ><span id="ksc-launcher-label">Ask Jake<small>Chat or voice</small></span><button id="ksc-trigger" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><div class="pulse"></div></button></div><div id="ksc-panel"><div class="ksc-header"><div class="ksc-avatar"><img src="data:image/png;base64,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" alt="Jake"/></div><div class="ksc-header-text"><h3>Jake</h3><p>Koh Samui Construction</p></div><div id="ksc-lang-wrap"><button id="ksc-lang-btn" onclick="kscToggleLangMenu(event)" aria-label="Choose language"><span id="ksc-lang-flag" style="font-size:19px;line-height:1">🇬🇧</span><span class="chev">▾</span></button><div id="ksc-lang-menu"></div></div><button class="ksc-close" onclick="kscClose()">✕</button></div><div id="ksc-home-screen"><div class="ksc-body"><p id="ksc-home-intro"> Talk to Jake's team — choose how you'd like to connect: </p><button class="ksc-option" onclick="kscShowChat()"><div class="ksc-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4A8C5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="ksc-option-text"><h4 id="ksc-opt-chat-t">Chat via Live Chat</h4><p id="ksc-opt-chat-s">Type your questions</p></div><span class="ksc-option-arrow">›</span></button><button class="ksc-option" onclick="kscShowVoice()"><div class="ksc-option-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4A8C5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.08 6.08l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.04z"/></svg></div><div class="ksc-option-text"><h4 id="ksc-opt-voice-t">Chat with Voice</h4><p id="ksc-opt-voice-s">Talk to our AI assistant</p></div><span class="ksc-option-arrow">›</span></button></div><div class="ksc-footer"><a href="https://kohsamui.construction" target="_blank" >kohsamui.construction · Powered by AI</a ></div></div><div id="ksc-chat-screen"><div class="ksc-chat-messages" id="ksc-messages"><div class="ksc-msg bot" id="ksc-greeting"> Hi! I'm Jake's AI assistant for Koh Samui Construction. Are you looking for help with a new build, renovation, maintenance, or something else? </div></div><div class="ksc-chat-input-row"><input type="text" id="ksc-input" placeholder="Type your message…" onkeydown="if (event.key === 'Enter') kscSend();"/><button class="ksc-send-btn" onclick="kscSend()"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" ><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div><div class="ksc-end-chat-bar"><button class="ksc-end-chat-btn" id="ksc-endchat-btn" onclick="kscEndChat()"> End Chat & Send Transcript </button><span class="ksc-end-chat-status" id="ksc-end-status" style="display:none">✓ Transcript sent</span ></div></div><div id="ksc-voice-screen"><p class="ksc-voice-status" id="ksc-voice-status"> Connecting to Jake AI... </p><button class="ksc-mic-btn" id="ksc-mic-btn" onclick="kscToggleMic()" style="opacity: 0.5; cursor: default" ><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button><p class="ksc-voice-note" id="ksc-voice-note"> Please allow microphone access when prompted. </p><button class="ksc-end-call-btn" id="ksc-end-call" onclick="kscEndCall()" style=" display: none; background: #c0392b; color: #fff; border: none; border-radius: 8px; padding: 8px 20px; font-size: 12px; cursor: pointer; margin-top: 4px; " > End Call </button><button class="ksc-back-btn" id="ksc-back-voice" onclick="kscShowHome()" > ← Back </button></div></div></div> <script>const panel = document.getElementById("ksc-panel");
+			const root = document.getElementById("ksc-widget-root");
+			const homeScreen = document.getElementById("ksc-home-screen");
+			const chatScreen = document.getElementById("ksc-chat-screen");
+			const voiceScreen = document.getElementById("ksc-voice-screen");
+			let micActive = false;
+			let callConnected = false;
+			let vapiInstance = null;
+
+			// ───── MULTILINGUAL SYSTEM (TEST) ─────
+			const KSC_I18N = {
+				en: { flag:"🇬🇧", native:"English", name:"English",
+					launcherT:"Ask Jake", launcherS:"Chat or voice",
+					intro:"Talk to Jake's team — choose how you'd like to connect:",
+					chatT:"Chat via Live Chat", chatS:"Type your questions",
+					voiceT:"Chat with Voice", voiceS:"Talk to our AI assistant",
+					greeting:"Hi! I'm Jake's AI assistant for Koh Samui Construction. Are you looking for help with a new build, renovation, maintenance, or something else?",
+					placeholder:"Type your message…", endChat:"End Chat & Send Transcript",
+					sent:"✓ Transcript sent", sendFail:"Could not send — please call us",
+					errMsg:"Connection issue — please call us on +66 925 10 20 30.",
+					connecting:"Connecting…", connectingJake:"Connecting to Jake AI...",
+					connected:"Connected — speak now", tapMic:"Tap the mic to speak with Jake AI",
+					micNote:"Please allow microphone access when prompted.",
+					back:"← Back", endCall:"End Call",
+					voiceUnavail:"Voice unavailable — please call +66 925 10 20 30",
+					errTry:"Error — please try again.", noConnect:"Could not connect — try again." },
+				th: { flag:"🇹🇭", native:"ไทย", name:"Thai",
+					launcherT:"คุยกับ Jake", launcherS:"แชทหรือโทร",
+					intro:"พูดคุยกับทีมของ Jake — เลือกช่องทางที่สะดวก:",
+					chatT:"แชทข้อความ", chatS:"พิมพ์คำถามของคุณ",
+					voiceT:"คุยด้วยเสียง", voiceS:"คุยกับผู้ช่วย AI (ภาษาอังกฤษ)",
+					greeting:"สวัสดีครับ! ผมคือผู้ช่วย AI ของ Jake จาก Koh Samui Construction สนใจสอบถามเรื่องสร้างใหม่ รีโนเวท ซ่อมบำรุง หรือเรื่องอื่นครับ?",
+					placeholder:"พิมพ์ข้อความ…", endChat:"จบแชทและส่งบันทึก",
+					sent:"✓ ส่งบันทึกแล้ว", sendFail:"ส่งไม่สำเร็จ — กรุณาโทรหาเรา",
+					errMsg:"การเชื่อมต่อขัดข้อง — โทร +66 925 10 20 30",
+					connecting:"กำลังเชื่อมต่อ…", connectingJake:"กำลังเชื่อมต่อกับ Jake AI...",
+					connected:"เชื่อมต่อแล้ว — พูดได้เลย", tapMic:"แตะไมค์เพื่อคุยกับ Jake AI",
+					micNote:"กรุณาอนุญาตการใช้ไมโครโฟนเมื่อระบบถาม (สนทนาเสียงเป็นภาษาอังกฤษ)",
+					back:"← กลับ", endCall:"วางสาย",
+					voiceUnavail:"ใช้เสียงไม่ได้ — โทร +66 925 10 20 30",
+					errTry:"เกิดข้อผิดพลาด — ลองใหม่อีกครั้ง", noConnect:"เชื่อมต่อไม่ได้ — ลองใหม่" },
+				zh: { flag:"🇨🇳", native:"中文", name:"Chinese",
+					launcherT:"咨询 Jake", launcherS:"文字或语音",
+					intro:"联系 Jake 团队 — 请选择沟通方式：",
+					chatT:"在线聊天", chatS:"输入您的问题",
+					voiceT:"语音通话", voiceS:"与 AI 助手通话（英语）",
+					greeting:"您好！我是 Koh Samui Construction Jake 的 AI 助手。请问您需要新建、翻新、维修还是其他方面的帮助？",
+					placeholder:"输入消息…", endChat:"结束聊天并发送记录",
+					sent:"✓ 记录已发送", sendFail:"发送失败 — 请致电我们",
+					errMsg:"连接出错 — 请致电 +66 925 10 20 30",
+					connecting:"连接中…", connectingJake:"正在连接 Jake AI...",
+					connected:"已连接 — 请讲", tapMic:"点击麦克风与 Jake AI 通话",
+					micNote:"请在提示时允许使用麦克风（语音通话为英语）",
+					back:"← 返回", endCall:"挂断",
+					voiceUnavail:"语音不可用 — 请致电 +66 925 10 20 30",
+					errTry:"出错了 — 请重试", noConnect:"无法连接 — 请重试" },
+				de: { flag:"🇩🇪", native:"Deutsch", name:"German",
+					launcherT:"Frag Jake", launcherS:"Chat oder Anruf",
+					intro:"Sprich mit Jakes Team — wähle deinen Kanal:",
+					chatT:"Live-Chat", chatS:"Fragen eintippen",
+					voiceT:"Sprachanruf", voiceS:"Mit KI-Assistent sprechen (Englisch)",
+					greeting:"Hallo! Ich bin Jakes KI-Assistent von Koh Samui Construction. Geht es um einen Neubau, eine Renovierung, Wartung oder etwas anderes?",
+					placeholder:"Nachricht eingeben…", endChat:"Chat beenden & senden",
+					sent:"✓ Gesendet", sendFail:"Senden fehlgeschlagen — bitte anrufen",
+					errMsg:"Verbindungsproblem — bitte anrufen: +66 925 10 20 30",
+					connecting:"Verbinde…", connectingJake:"Verbinde mit Jake AI...",
+					connected:"Verbunden — sprich jetzt", tapMic:"Tippe aufs Mikro, um mit Jake AI zu sprechen",
+					micNote:"Bitte Mikrofonzugriff erlauben (Sprachanruf auf Englisch)",
+					back:"← Zurück", endCall:"Auflegen",
+					voiceUnavail:"Sprache nicht verfügbar — bitte anrufen: +66 925 10 20 30",
+					errTry:"Fehler — bitte erneut versuchen", noConnect:"Keine Verbindung — erneut versuchen" },
+				es: { flag:"🇪🇸", native:"Español", name:"Spanish",
+					launcherT:"Pregunta a Jake", launcherS:"Chat o voz",
+					intro:"Habla con el equipo de Jake — elige cómo conectar:",
+					chatT:"Chat en vivo", chatS:"Escribe tus preguntas",
+					voiceT:"Llamada de voz", voiceS:"Habla con nuestro asistente (en inglés)",
+					greeting:"¡Hola! Soy el asistente de IA de Jake en Koh Samui Construction. ¿Buscas ayuda con una obra nueva, renovación, mantenimiento u otra cosa?",
+					placeholder:"Escribe tu mensaje…", endChat:"Finalizar y enviar chat",
+					sent:"✓ Transcripción enviada", sendFail:"No se pudo enviar — llámanos",
+					errMsg:"Problema de conexión — llámanos al +66 925 10 20 30",
+					connecting:"Conectando…", connectingJake:"Conectando con Jake AI...",
+					connected:"Conectado — habla ahora", tapMic:"Toca el micro para hablar con Jake AI",
+					micNote:"Permite el acceso al micrófono cuando se solicite (la voz es en inglés)",
+					back:"← Volver", endCall:"Colgar",
+					voiceUnavail:"Voz no disponible — llama al +66 925 10 20 30",
+					errTry:"Error — inténtalo de nuevo", noConnect:"No se pudo conectar — reintenta" }
+			};
+			let kscLang = "en";
+			function t(key){ return (KSC_I18N[kscLang] && KSC_I18N[kscLang][key]) || KSC_I18N.en[key]; }
+
+			function kscBuildLangMenu(){
+				const menu = document.getElementById("ksc-lang-menu");
+				menu.innerHTML = "";
+				Object.keys(KSC_I18N).forEach(code=>{
+					const item = document.createElement("button");
+					item.className = "ksc-lang-item" + (code===kscLang ? " active" : "");
+					item.innerHTML = "<span style='font-size:19px;line-height:1'>" + KSC_I18N[code].flag + "</span><span>" + KSC_I18N[code].native + "</span>";
+					item.onclick = (e)=>{ e.stopPropagation(); kscSetLang(code); };
+					menu.appendChild(item);
+				});
+			}
+			function kscToggleLangMenu(e){
+				e.stopPropagation();
+				kscBuildLangMenu();
+				document.getElementById("ksc-lang-menu").classList.toggle("open");
+			}
+			document.addEventListener("click", ()=>{ 
+				const m = document.getElementById("ksc-lang-menu");
+				if (m) m.classList.remove("open");
+			});
+			function kscSetLang(code){
+				kscLang = code;
+				document.getElementById("ksc-lang-menu").classList.remove("open");
+				document.getElementById("ksc-lang-flag").textContent = KSC_I18N[code].flag;
+				document.getElementById("ksc-launcher-label").innerHTML = t("launcherT") + "<small>" + t("launcherS") + "</small>";
+				document.getElementById("ksc-home-intro").textContent = " " + t("intro") + " ";
+				document.getElementById("ksc-opt-chat-t").textContent = t("chatT");
+				document.getElementById("ksc-opt-chat-s").textContent = t("chatS");
+				document.getElementById("ksc-opt-voice-t").textContent = t("voiceT");
+				document.getElementById("ksc-opt-voice-s").textContent = t("voiceS");
+				document.getElementById("ksc-input").placeholder = t("placeholder");
+				document.getElementById("ksc-endchat-btn").textContent = " " + t("endChat") + " ";
+				document.getElementById("ksc-voice-note").textContent = " " + t("micNote") + " ";
+				document.getElementById("ksc-back-voice").textContent = " " + t("back") + " ";
+				document.getElementById("ksc-end-call").textContent = " " + t("endCall") + " ";
+				const st = document.getElementById("ksc-end-status");
+				if (st) { st.style.display = "none"; st.textContent = t("sent"); }
+				const vs = document.getElementById("ksc-voice-status");
+				if (!micActive) vs.textContent = t("tapMic");
+				// Swap greeting only if the conversation has not started
+				if (chatHistory.length === 0) {
+					document.getElementById("ksc-greeting").textContent = " " + t("greeting") + " ";
+				}
+			}
+			function kscLangRule(){
+				const n = KSC_I18N[kscLang].name;
+				return "CRITICAL LANGUAGE RULE — HIGHEST PRIORITY: You MUST write every reply in " + n + ". Do not reply in English unless the visitor themselves writes a full message in English. If the visitor writes a full message in a language other than " + n + ", mirror the visitor's language. Always record names, phone numbers and place names exactly as the visitor gives them. When you confirm the visitor's name and phone number back to them, write the name in Latin letters and the number in Western digits (0-9) so the details are always readable in the transcript, whatever the conversation language.\n\n";
+			}
+			// ───── END MULTILINGUAL SYSTEM ─────
+
+			function kscSetPanelOpen(isOpen) {
+				panel.classList.toggle("open", isOpen);
+				root.classList.toggle("panel-open", isOpen);
+			}
+
+			// ── REPLACE THESE WITH YOUR REAL KEYS ──
+			const VAPI_PUBLIC_KEY = "79e7e506-ccc3-40b3-a87e-e8e00187ac5b";
+			const VAPI_ASSISTANT_ID = "03bcfc13-aaf3-4fd0-9c6c-353f181a549a";
+
+			function kscToggle() {
+				const willOpen = !panel.classList.contains("open");
+				kscSetPanelOpen(willOpen);
+				if (!willOpen) kscRememberClosed();
+			}
+			function kscRememberClosed() {
+				try {
+					sessionStorage.setItem("kscWidgetClosed", "1");
+				} catch (e) {}
+			}
+			function kscClose() {
+				kscRememberClosed();
+				// If closing while in chat and there are messages, send transcript first
+				if (chatScreen.classList.contains("active") && chatHistory.length > 0) {
+					kscEndChat();
+				} else {
+					kscSetPanelOpen(false);
+					kscShowHome();
+				}
+			}
+			function kscShowHome() {
+				homeScreen.style.display = "";
+				chatScreen.classList.remove("active");
+				voiceScreen.classList.remove("active");
+				const lw = document.getElementById("ksc-lang-wrap");
+				if (lw) lw.style.display = "flex";
+			}
+			function kscShowChat() {
+				homeScreen.style.display = "none";
+				chatScreen.classList.add("active");
+				voiceScreen.classList.remove("active");
+				const lw = document.getElementById("ksc-lang-wrap");
+				if (lw) lw.style.display = "flex";
+				document.getElementById("ksc-input").focus();
+			}
+			function kscShowVoice() {
+				homeScreen.style.display = "none";
+				chatScreen.classList.remove("active");
+				voiceScreen.classList.add("active");
+				const lw = document.getElementById("ksc-lang-wrap");
+				if (lw) lw.style.display = "none";
+				// Auto-start the call immediately
+				if (!micActive) {
+					micActive = true;
+					const btn = document.getElementById("ksc-mic-btn");
+					const endBtn = document.getElementById("ksc-end-call");
+					const backBtn = document.getElementById("ksc-back-voice");
+					btn.classList.add("active");
+					btn.style.opacity = "1";
+					btn.style.cursor = "pointer";
+					endBtn.style.display = "block";
+					backBtn.style.display = "none";
+					startVapiCall(VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID);
+				}
+			}
+
+			const CHAT_WEBHOOK =
+				"https://hook.eu1.make.com/tu95irx41hmaqno858ih8x3fmuliwby4";
+			const chatHistory = [];
+
+			async function kscEndChat() {
+				if (chatHistory.length === 0) {
+					kscShowHome();
+					return;
+				}
+				const status = document.getElementById("ksc-end-status");
+
+				// Build transcript text
+				const transcript = chatHistory
+					.map(
+						(m) => (m.role === "user" ? "Visitor: " : "Jake AI: ") + m.content,
+					)
+					.join("\n\n");
+
+				// Send to Make.com
+				try {
+					await fetch(CHAT_WEBHOOK, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							type: "chat-ended",
+							timestamp: new Date().toISOString(),
+							source: "KSC Live Chat Widget",
+							transcript: transcript,
+							messageCount: chatHistory.length,
+							language: KSC_I18N[kscLang].name,
+						}),
+					});
+					status.textContent = t("sent");
+					status.style.display = "block";
+					setTimeout(() => {
+						kscRememberClosed();
+						kscSetPanelOpen(false);
+						kscShowHome();
+						chatHistory.length = 0;
+						status.style.display = "none";
+					}, 2000);
+				} catch (e) {
+					status.textContent = t("sendFail");
+					status.style.display = "block";
+				}
+			}
+			const SYSTEM_PROMPT = `You are a chat assistant for Koh Samui Construction in Koh Samui, Thailand.
+
+STRICT RULES - follow these exactly:
+1. Maximum 2 sentences per reply. Never write more than 2 sentences.
+2. No bullet points, no lists, no bold text, no emojis, no markdown formatting.
+3. Ask only one question per reply.
+4. Write like a friendly WhatsApp message - short and natural.
+5. Never quote prices.
+6. Your goal is to find out what the visitor needs, then get their name and phone number so Jake can call them back.
+7. If they ask for details just say Jake will give them a call - can you take their name and number?
+8. Place names: visitors may write Koh Samui locations phonetically in any language or script (e.g. Bo Phut, Boput, Bopu, Popo). Always use the correct spelling in your replies: Bophut, Chaweng, Lamai, Maenam, Bang Rak, Choeng Mon, Plai Laem, Nathon, Koh Phangan, Koh Samui.`;
+
+			async function kscSend() {
+				const input = document.getElementById("ksc-input");
+				const text = input.value.trim();
+				if (!text) return;
+				input.value = "";
+				const msgs = document.getElementById("ksc-messages");
+				const userMsg = document.createElement("div");
+				userMsg.className = "ksc-msg user";
+				userMsg.textContent = text;
+				msgs.appendChild(userMsg);
+				const typing = document.createElement("div");
+				typing.className = "ksc-typing";
+				typing.innerHTML = "<span></span><span></span><span></span>";
+				msgs.appendChild(typing);
+				msgs.scrollTop = msgs.scrollHeight;
+				chatHistory.push({ role: "user", content: text });
+				try {
+					const res = await fetch(
+						"https://aiagent-proxy.james-338.workers.dev",
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								model: "claude-sonnet-4-5",
+								max_tokens: 1000,
+								system: kscLangRule() + SYSTEM_PROMPT,
+								messages: chatHistory,
+							}),
+						},
+					);
+					const data = await res.json();
+					console.log("Worker response:", JSON.stringify(data));
+					const reply =
+						data.content?.[0]?.text ||
+						data.error?.message ||
+						JSON.stringify(data) ||
+						"Sorry, please try again.";
+					chatHistory.push({ role: "assistant", content: reply });
+					typing.remove();
+					const botMsg = document.createElement("div");
+					botMsg.className = "ksc-msg bot";
+					botMsg.innerHTML = reply
+						.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+						.replace(/\n- /g, "<br>&bull; ")
+						.replace(/\n/g, "<br>");
+					msgs.appendChild(botMsg);
+					msgs.scrollTop = msgs.scrollHeight;
+				} catch (e) {
+					typing.remove();
+					const errMsg = document.createElement("div");
+					errMsg.className = "ksc-msg bot";
+					errMsg.textContent =
+						t("errMsg");
+					msgs.appendChild(errMsg);
+				}
+			}
+
+			function kscToggleMic() {
+				const btn = document.getElementById("ksc-mic-btn");
+				const status = document.getElementById("ksc-voice-status");
+				const endBtn = document.getElementById("ksc-end-call");
+				const backBtn = document.getElementById("ksc-back-voice");
+				// Ignore taps while a call is still connecting — tapping mid-connect
+				// was ending the call and forcing visitors to start over
+				if (micActive && !callConnected) return;
+				if (!micActive) {
+					micActive = true;
+					btn.classList.add("active");
+					status.textContent = t("connecting");
+					endBtn.style.display = "block";
+					backBtn.style.display = "none";
+					startVapiCall(VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID);
+				} else {
+					kscEndCall();
+				}
+			}
+
+			function kscEndCall() {
+				kscStopRinging();
+				micActive = false;
+				callConnected = false;
+				const btn = document.getElementById("ksc-mic-btn");
+				const status = document.getElementById("ksc-voice-status");
+				const endBtn = document.getElementById("ksc-end-call");
+				const backBtn = document.getElementById("ksc-back-voice");
+				btn.classList.remove("active");
+				status.textContent = t("tapMic");
+				endBtn.style.display = "none";
+				backBtn.style.display = "block";
+				if (vapiInstance) {
+					try {
+						vapiInstance.stop();
+					} catch (e) {
+						console.log("Stop error:", e);
+					}
+				}
+			}
+
+			// Vapi SDK already loaded in <head> - just mark as ready
+			window.vapiLoaded = typeof window.Vapi !== "undefined";
+
+			// ───── RINGING TONE (masks connection delay) ─────
+			let kscRingCtx = null;
+			let kscRingTimer = null;
+			function kscRingBurst() {
+				if (!kscRingCtx) return;
+				const now = kscRingCtx.currentTime;
+				[0, 0.6].forEach((offset) => {
+					const osc = kscRingCtx.createOscillator();
+					const osc2 = kscRingCtx.createOscillator();
+					const gain = kscRingCtx.createGain();
+					osc.frequency.value = 400;
+					osc2.frequency.value = 450;
+					gain.gain.setValueAtTime(0, now + offset);
+					gain.gain.linearRampToValueAtTime(0.07, now + offset + 0.03);
+					gain.gain.setValueAtTime(0.07, now + offset + 0.35);
+					gain.gain.linearRampToValueAtTime(0, now + offset + 0.4);
+					osc.connect(gain); osc2.connect(gain);
+					gain.connect(kscRingCtx.destination);
+					osc.start(now + offset); osc2.start(now + offset);
+					osc.stop(now + offset + 0.45); osc2.stop(now + offset + 0.45);
+				});
+			}
+			function kscStartRinging() {
+				try {
+					kscStopRinging();
+					if (!kscRingCtx) kscRingCtx = new (window.AudioContext || window.webkitAudioContext)();
+					if (kscRingCtx.state === "suspended") kscRingCtx.resume();
+					kscRingBurst();
+					kscRingTimer = setInterval(kscRingBurst, 3000);
+					setTimeout(kscStopRinging, 20000);
+				} catch (e) { console.log("Ring tone unavailable:", e); }
+			}
+			function kscStopRinging() {
+				if (kscRingTimer) { clearInterval(kscRingTimer); kscRingTimer = null; }
+			}
+			// ───── END RINGING TONE ─────
+
+			async function startVapiCall(publicKey, assistantId) {
+				const status = document.getElementById("ksc-voice-status");
+				const btn = document.getElementById("ksc-mic-btn");
+
+				// SDK loaded in <head> - check immediately with short fallback
+				if (!window.Vapi) {
+					// Give it 2 seconds max as fallback
+					let waited = 0;
+					while (!window.Vapi && waited < 2000) {
+						await new Promise((r) => setTimeout(r, 100));
+						waited += 100;
+					}
+				}
+
+				if (!window.Vapi) {
+					status.textContent = t("voiceUnavail");
+					micActive = false;
+					btn.classList.remove("active");
+					return;
+				}
+
+				try {
+					console.log("Starting Vapi with key:", publicKey);
+					kscStartRinging();
+					vapiInstance = new window.Vapi(publicKey);
+
+					vapiInstance.on("call-start", () => {
+						console.log("Call started");
+						kscStopRinging();
+						callConnected = true;
+						const btn = document.getElementById("ksc-mic-btn");
+						btn.style.opacity = "1";
+						btn.style.cursor = "pointer";
+						status.textContent = t("connected");
+					});
+
+					vapiInstance.on("call-end", () => {
+						console.log("Call ended");
+						kscEndCall();
+					});
+
+					vapiInstance.on("error", (e) => {
+						console.log("Vapi error:", JSON.stringify(e));
+						kscStopRinging();
+						status.textContent = t("errTry");
+						micActive = false;
+						callConnected = false;
+						btn.classList.remove("active");
+					});
+
+					vapiInstance.on("speech-start", () => {
+						console.log("Jake speaking");
+						kscStopRinging();
+					});
+					vapiInstance.on("speech-end", () => {
+						console.log("Jake done speaking");
+					});
+
+					console.log("Calling vapiInstance.start()");
+					await vapiInstance.start(assistantId);
+					console.log("Start called successfully");
+				} catch (e) {
+					console.log("Vapi start error:", e.message);
+					kscStopRinging();
+					status.textContent = t("noConnect");
+					micActive = false;
+					callConnected = false;
+					btn.classList.remove("active");
+				}
+			}</script> </body></html>
